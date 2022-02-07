@@ -14,6 +14,8 @@ def get_series():
 
 
 def create_serie():
+    Series.series()
+
     data = request.get_json()
 
     serie = Series(**data)
@@ -33,9 +35,18 @@ def create_serie():
     return jsonify(inserted_serie), HTTPStatus.CREATED
 
 def get_series_by_id(series_id):
-    serie_values = Series.select_by_id(series_id)
-    serie_keys = ["id", "serie", "seasons", "released_date", "genre", "imdb_rating"]
 
-    serie = [dict(zip(serie_keys, serie_values))]
+    try:
 
-    return jsonify(serie)
+        serie_values = Series.select_by_id(series_id)
+        serie_keys = ["id", "serie", "seasons", "released_date", "genre", "imdb_rating"]
+
+        serie = [dict(zip(serie_keys, serie_values))]
+
+        return jsonify(serie), HTTPStatus.OK
+
+    except:
+        return (
+            jsonify({"error": "Not found"}),
+            HTTPStatus.NOT_FOUND
+            )
